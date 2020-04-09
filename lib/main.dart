@@ -51,7 +51,7 @@ class _HomeState extends State<Home> {
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
                         borderSide: BorderSide(color: Colors.white)),
-                    prefixText: "RS",
+                    prefixText: "R\$",
                     prefixStyle: TextStyle(
                       color: Color.fromRGBO(250, 250, 250, 0.7),
                       fontSize: 15,
@@ -79,7 +79,7 @@ class _HomeState extends State<Home> {
                         borderSide: BorderSide(
                           color: Colors.white,
                         )),
-                    prefixText: "US",
+                    prefixText: "U\$",
                     prefixStyle: TextStyle(
                       color: Color.fromRGBO(250, 250, 250, 0.7),
                       fontSize: 15,
