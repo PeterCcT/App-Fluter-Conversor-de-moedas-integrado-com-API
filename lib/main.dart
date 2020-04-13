@@ -21,6 +21,45 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  double euro;
+  double dolar;
+  final dolController = TextEditingController();
+  final eurController = TextEditingController();
+  final realController = TextEditingController();
+
+  void _realChanged(String text) {
+    if (text.isEmpty) {
+      _clear();
+    }
+    double real = double.parse(text);
+    dolController.text = (real / dolar).toStringAsFixed(2);
+    eurController.text = (real / euro).toStringAsFixed(2);
+  }
+
+  void _eurChanged(String text) {
+    if (text.isEmpty) {
+      _clear();
+    }
+    double euro = double.parse(text);
+    realController.text = (euro * this.euro).toStringAsFixed(2);
+    eurController.text = ((euro * this.euro) / dolar).toStringAsFixed(2);
+  }
+
+  void _dolChanged(String text) {
+    if (text.isEmpty) {
+      _clear();
+    }
+    double dolar = double.parse(text);
+    realController.text = (dolar * this.dolar).toStringAsFixed(2);
+    eurController.text = ((dolar * this.dolar) / euro).toStringAsFixed(2);
+  }
+
+  void _clear() {
+    realController.text = "";
+    dolController.text = "";
+    eurController.text = "";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,6 +90,8 @@ class _HomeState extends State<Home> {
                       textAlign: TextAlign.center),
                 );
               } else {
+                euro = snapshot.data["results"]["currencies"]["EUR"]["buy"];
+                dolar = snapshot.data["results"]["currencies"]["USD"]["buy"];
                 return SingleChildScrollView(
                   child: Form(
                     child: Column(
@@ -64,17 +105,20 @@ class _HomeState extends State<Home> {
                         Padding(
                           padding: EdgeInsets.symmetric(
                               vertical: 15, horizontal: 15),
-                          child: buildTextField("BRL", "R\$"),
+                          child: buildTextField(
+                              "BRL", "R\$", realController, _realChanged),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(
                               vertical: 15, horizontal: 15),
-                          child: buildTextField("USD", "U\$"),
+                          child: buildTextField(
+                              "USD", "U\$", dolController, _dolChanged),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(
                               vertical: 15, horizontal: 15),
-                          child: buildTextField("EUR", "€"),
+                          child: buildTextField(
+                              "EUR", "€", eurController, _eurChanged),
                         ),
                       ],
                     ),
@@ -92,8 +136,10 @@ class _HomeState extends State<Home> {
     return json.decode(resposta.body);
   }
 
-  Widget buildTextField(String label, String prefixo) {
+  Widget buildTextField(String label, String prefixo,
+      TextEditingController control, Function converter) {
     return TextFormField(
+      controller: control,
       keyboardType: TextInputType.number,
       style: TextStyle(color: Colors.white, fontSize: 15, letterSpacing: 2),
       decoration: InputDecoration(
@@ -116,6 +162,7 @@ class _HomeState extends State<Home> {
         labelText: label,
         labelStyle: TextStyle(color: Colors.white, fontSize: 20),
       ),
+      onChanged: converter,
     );
   }
 }
