@@ -24,37 +24,65 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.amber,
+      backgroundColor: Colors.black,
       appBar: AppBar(
         title: Text("Conversor de moedas"),
         centerTitle: true,
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.amber,
       ),
-      body: SingleChildScrollView(
-        child: Form(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Icon(
-                Icons.monetization_on,
-                color: Colors.amber,
-                size: 120,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                child: buildTextField("BRL", "R\$"),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                child: buildTextField("USD", "U\$"),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                child: buildTextField("EUR", "€"),
-              ),
-            ],
-          ),
-        ),
+      body: FutureBuilder<Map>(
+        future: getData(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+            case ConnectionState.waiting:
+              return Center(
+                child: Text("Carregando dados",
+                    style: TextStyle(color: Colors.amber, fontSize: 20),
+                    textAlign: TextAlign.center),
+              );
+
+              break;
+            default:
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text("Erro ao carregar dados",
+                      style: TextStyle(color: Colors.amber, fontSize: 20),
+                      textAlign: TextAlign.center),
+                );
+              } else {
+                return SingleChildScrollView(
+                  child: Form(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Icon(
+                          Icons.monetization_on,
+                          color: Colors.amber,
+                          size: 120,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 15),
+                          child: buildTextField("BRL", "R\$"),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 15),
+                          child: buildTextField("USD", "U\$"),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 15),
+                          child: buildTextField("EUR", "€"),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+          }
+        },
       ),
     );
   }
